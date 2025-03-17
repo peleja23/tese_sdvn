@@ -38,14 +38,18 @@ def myNetwork():
     kwargs = {'ssid': 'vanet-ssid', 'mode': 'g', 'passwd': '123456789a',
               'encrypt': 'wpa2', 'failMode': 'standalone', 'datapath': 'user'}
     
-    e1 = net.addAccessPoint('e1', mac='00:00:00:11:00:01', channel='1',
-                            position='2600,3500,0', **kwargs, range = 150)
-    e2 = net.addAccessPoint('e2', mac='00:00:00:11:00:02', channel='6',
-                            position='2800,3500,0', **kwargs, range = 150)
-    e3 = net.addAccessPoint('e3', mac='00:00:00:11:00:03', channel='11',
-                            position='3000,3500,0', **kwargs, range = 150)
-    e4 = net.addAccessPoint('e4', mac='00:00:00:11:00:04', channel='1',
-                            position='2600,3300,0', **kwargs, range = 150)
+    e1 = net.addAccessPoint('e1', cls=OVSKernelAP, ssid='e1-ssid', mode='g',
+                            channel='1', position='1150,1150,0', range=200,
+                            protocols = 'OpenFlow13')
+    e2 = net.addAccessPoint('e2', cls=OVSKernelAP, ssid='e2-ssid', mode='g',
+                            channel='1', position='1250,850,0', range=200,
+                            protocols = 'OpenFlow13')
+    e3 = net.addAccessPoint('e3', cls=OVSKernelAP, ssid='e3-ssid', mode='g',
+                            channel='1', position='1000,850,0', range=200,
+                            protocols = 'OpenFlow13')
+    e4 = net.addAccessPoint('e4', cls=OVSKernelAP, ssid='e4-ssid', mode='g',
+                            channel='1', position='750,800,0', range=200, 
+                            protocols = 'OpenFlow13')
 
     info("*** Configuring Propagation Model\n")
     net.setPropagationModel(model="logDistance", exp=2.8)
@@ -67,22 +71,20 @@ def myNetwork():
                     cls=ITSLink, band=20, channel=181)
 
     # Use external SUMO program
-    net.useExternalProgram(program=sumo, port=8813,
-                           extra_params=["--start --delay 1000"],
+    net.useExternalProgram(program=sumo, port=8813, 
+                           config_file= './sumo_test/simple.sumocfg', 
+                           extra_params=["--start --delay 1000"], 
                            clients=1, exec_order=0)
 
     # Assigning IPs to the cars and access points
     for id, car in enumerate(net.cars):
-        car.setIP('10.0.0.{}/24'.format(id + 1),
-                  intf='{}'.format(car.wintfs[0].name))
-        car.setIP('10.0.1.{}/24'.format(id + 1),
-                  intf='{}'.format(car.wintfs[1].name))
+        car.setIP('10.0.0.{}/24'.format(id + 1), intf='{}'.format(car.wintfs[0].name))
 
     # Track the position of the nodes
     nodes = net.cars + net.aps
     net.telemetry(nodes=nodes, data_type='position',
-                  min_x=2200, min_y=2800,
-                  max_x=3200, max_y=3900)
+                  min_x=0, min_y=0,
+                  max_x=3200, max_y=1400)
 
     info('*** Starting network\n')
     net.build()
