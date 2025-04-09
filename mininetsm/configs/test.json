@@ -1,0 +1,35 @@
+{
+    "sumoConfig": "/home/pedro/tese/mininet-sumo/sumo_test/Test/simple.sumocfg",
+    "telemetry": {
+        "enabled": true,
+        "min_x":0, 
+        "min_y":0,
+        "max_x":3200,
+        "max_y":1400
+    },
+    "cars": {
+        "count": 10
+    },
+    "aps": [
+        {
+            "id": "1",
+            "position":"1150,1150,0",
+            "channel": "1"
+        },
+        {
+            "id": "2",
+            "position":"1250,850,0",
+            "channel": "11"
+        },
+        {
+            "id": "3",
+            "position":"1000,850,0",
+            "channel": "6"
+        },
+        {
+            "id": "4",
+            "position":"750,800,0",
+            "channel": "1"
+        }
+    ]
+}

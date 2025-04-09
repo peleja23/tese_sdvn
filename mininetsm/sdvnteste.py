@@ -3,7 +3,7 @@ from mininet.log import setLogLevel, info
 from mn_wifi.net import Mininet_wifi
 from mn_wifi.node import Station, OVSKernelAP
 from mn_wifi.cli import CLI
-from mn_wifi.link import wmediumd, adhoc, mesh
+from mn_wifi.link import wmediumd, ITSLink, mesh
 from mn_wifi.wmediumdConnector import interference
 from subprocess import call
 from mn_wifi.sumo.runner import sumo
@@ -57,8 +57,7 @@ def myNetwork():
     # Adding links between cars and APs using ITSLink
     for car in net.cars:
         net.addLink(car, intf=car.wintfs[1].name, 
-                    cls=adhoc, ssid='adhocNet', channel=5, 
-                    proto = 'olsrd')
+                    cls=mesh, band='mesh-ssid', channel=5)
 
     info('*** Add links\n')
     net.addLink(s1, s2)
@@ -70,7 +69,7 @@ def myNetwork():
 
     # Use external SUMO program
     net.useExternalProgram(program=sumo, port=8813, 
-                           config_file= './sumo_test/simple.sumocfg', 
+                           config_file= '/home/tese/sumo_test/Test/simple.sumocfg', 
                            extra_params=["--start --delay 1000"], 
                            clients=1, exec_order=0)
 
