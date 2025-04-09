@@ -30,7 +30,6 @@ def myNetwork():
     s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
     s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
     
-    cars = []
     # Adding cars (with the possibility of two wireless interfaces for each car)
     for id in range(0, 10):
         net.addCar('car%s' % (id + 1), wlans=2, encrypt=['wpa2', ''], range = 162)
