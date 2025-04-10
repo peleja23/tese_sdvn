@@ -1,5 +1,5 @@
 {
-    "sumoConfig": "/home/pedro/tese/mininet-sumo/sumo_test/Test/simple.sumocfg",
+    "sumoConfig": "/home/pedro/tese/mininetsumo/sumo/Test/simple.sumocfg",
     "telemetry": {
         "enabled": true,
         "min_x":0, 
