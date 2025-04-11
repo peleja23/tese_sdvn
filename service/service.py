@@ -1,18 +1,21 @@
-#from kind.kindctrl import Kindctrl
+from kind.kindctrl import Kindctrl
 from mininetsumo.sdvn import MininetSumo
 
 import subprocess
-import math
-import requests
-import threading
 import os
 import json
 
 
 class Service:
 
-    def __init__(self, sdnController):
+    def __init__(self, kindCLuster, sdnController, mininetSim):
+        self.kindCluster = kindCLuster
         self.sdnController = sdnController
+        self.mininetSim = mininetSim
+
+    def startKind(self):
+        k = Kindctrl(self.kindCluster)
+        k.startCluster()
 
     def startRyuController(self):
         user = os.getenv("SUDO_USER") or os.getenv("USER")
@@ -20,5 +23,6 @@ class Service:
         subprocess.Popen(['konsole','--noclose','-e','bash', '-c', cmd])
         
     def startMininetSumo(self):
-        m = MininetSumo()
+        m = MininetSumo(self.mininetSim)
         m.myNetwork()
+

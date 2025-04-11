@@ -10,13 +10,13 @@ from mn_wifi.sumo.runner import sumo
 
 class MininetSumo:
 
-    def load_config(path):
-        with open(path, 'r') as f:
-            return json.load(f)
+    def __init__(self, configPath):
+        self.configPath = configPath
+        with open(configPath, 'r') as f:
+             self.config = json.load(f)
 
     def myNetwork(self):
         
-        config = MininetSumo.load_config('/home/pedro/tese/mininetsumo/configs/test.json')
         net = Mininet_wifi(topo=None,
                         build=False,
                         link=wmediumd,
@@ -35,7 +35,7 @@ class MininetSumo:
         s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
 
         info('*** Add cars\n')
-        car_count = config["cars"]["count"]
+        car_count = self.config["cars"]["count"]
         cars = []
         for id in range(car_count):
             car = net.addCar(f'car{id + 1}', wlans=2, 
@@ -44,7 +44,7 @@ class MininetSumo:
 
         info('*** Add APs\n')
         aps = []
-        for ap_cfg in config["aps"]:
+        for ap_cfg in self.config["aps"]:
             ap = net.addAccessPoint(
                 'e' + ap_cfg["id"],
                 cls=OVSKernelAP,
@@ -79,7 +79,7 @@ class MininetSumo:
         net.addLink(s3, aps[3])
 
         net.useExternalProgram(program=sumo, port=8813,
-                               config_file=config["sumoConfig"],
+                               config_file=self.config["sumoConfig"],
                                extra_params=["--start", "--delay", "1000"],
                                clients=1, exec_order=0)
 
@@ -91,14 +91,14 @@ class MininetSumo:
 
         net.addNAT().configDefault()
         
-        if config.get("telemetry", {}).get("enabled", False):
+        if self.config.get("telemetry", {}).get("enabled", False):
             net.telemetry(
                 nodes=cars + aps,
                 data_type='position',
-                min_x=config["telemetry"]["min_x"],
-                min_y=config["telemetry"]["min_y"],
-                max_x=config["telemetry"]["max_x"],
-                max_y=config["telemetry"]["max_y"]
+                min_x=self.config["telemetry"]["min_x"],
+                min_y=self.config["telemetry"]["min_y"],
+                max_x=self.config["telemetry"]["max_x"],
+                max_y=self.config["telemetry"]["max_y"]
             )
 
         info('*** Starting network\n')
